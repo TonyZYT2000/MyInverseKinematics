@@ -3,13 +3,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Cube::Cube(glm::vec3 offset, glm::vec3 cubeMin, glm::vec3 cubeMax) 
+Cube::Cube(glm::vec3 offset, glm::vec3 color, glm::vec3 cubeMin, glm::vec3 cubeMax) :
+	color(color)
 {
 	// Model matrix.
 	model = glm::translate(glm::mat4(1), offset) * glm::mat4(1.0f);
-
-	// The color of the cube. Try setting it to something else!
-	color = glm::vec3(1.0f, 0.95f, 0.1f); 
 
 	// Specify vertex positions
 	positions = {

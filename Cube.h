@@ -22,7 +22,8 @@ private:
 	void spin(float deg);
 
 public:
-	Cube(glm::vec3 offset, glm::vec3 cubeMin=glm::vec3(-1,-1,-1), glm::vec3 cubeMax=glm::vec3(1, 1, 1));
+	Cube(glm::vec3 offset, glm::vec3 color,
+		glm::vec3 cubeMin=glm::vec3(-1,-1,-1), glm::vec3 cubeMax=glm::vec3(1, 1, 1));
 	~Cube();
 
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);

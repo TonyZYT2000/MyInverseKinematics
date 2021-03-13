@@ -12,19 +12,15 @@ Joint::Joint(float length, glm::vec3 pose, glm::vec3 offset,
 	W = glm::mat4(1);
 	L = glm::mat4(1);
 
-	// force no limit
-      rotXLimit = glm::vec2(-100000, 100000);
-	rotYLimit = glm::vec2(-100000, 100000);
-	rotZLimit = glm::vec2(-100000, 100000);
-      this->rotXLimit = glm::vec2(-100000, 100000);
-	this->rotYLimit = glm::vec2(-100000, 100000);
-	this->rotZLimit = glm::vec2(-100000, 100000);
+	pose.x = glm::clamp(pose.x, rotXLimit.x, rotXLimit.y);
+	pose.y = glm::clamp(pose.y, rotYLimit.x, rotYLimit.y);
+	pose.z = glm::clamp(pose.z, rotZLimit.x, rotZLimit.y);
 
 	// 4 operations, translation and 3 rotations
 	glm::mat4 translate = glm::translate(glm::mat4(1), offset);
-	glm::mat4 rotX = glm::rotate(glm::clamp(pose.x, rotXLimit.x, rotXLimit.y), glm::vec3(1, 0, 0));
-	glm::mat4 rotY = glm::rotate(glm::clamp(pose.y, rotYLimit.x, rotYLimit.y), glm::vec3(0, 1, 0));
-	glm::mat4 rotZ = glm::rotate(glm::clamp(pose.z, rotZLimit.x, rotZLimit.y), glm::vec3(0, 0, 1));
+	glm::mat4 rotX = glm::rotate(pose.x, glm::vec3(1, 0, 0));
+	glm::mat4 rotY = glm::rotate(pose.y, glm::vec3(0, 1, 0));
+	glm::mat4 rotZ = glm::rotate(pose.z, glm::vec3(0, 0, 1));
 	// calculate local matrix
 	L = translate * rotZ * rotY * rotX * L;
 
@@ -115,11 +111,15 @@ glm::vec3 Joint::jacobianZ(glm::vec3 target) {
 void Joint::incrementPose(glm::vec3 deltaPose) {
 	pose += deltaPose;
 
+	pose.x = glm::clamp(pose.x, rotXLimit.x, rotXLimit.y);
+	pose.y = glm::clamp(pose.y, rotYLimit.x, rotYLimit.y);
+	pose.z = glm::clamp(pose.z, rotZLimit.x, rotZLimit.y);
+
 	// 4 operations, translation and 3 rotations
 	glm::mat4 translate = glm::translate(glm::mat4(1), offset);
-	glm::mat4 rotX = glm::rotate(glm::clamp(pose.x, rotXLimit.x, rotXLimit.y), glm::vec3(1, 0, 0));
-	glm::mat4 rotY = glm::rotate(glm::clamp(pose.y, rotYLimit.x, rotYLimit.y), glm::vec3(0, 1, 0));
-	glm::mat4 rotZ = glm::rotate(glm::clamp(pose.z, rotZLimit.x, rotZLimit.y), glm::vec3(0, 0, 1));
+	glm::mat4 rotX = glm::rotate(pose.x, glm::vec3(1, 0, 0));
+	glm::mat4 rotY = glm::rotate(pose.y, glm::vec3(0, 1, 0));
+	glm::mat4 rotZ = glm::rotate(pose.z, glm::vec3(0, 0, 1));
 	// calculate local matrix
 	L = translate * rotZ * rotY * rotX * glm::mat4(1);
 }

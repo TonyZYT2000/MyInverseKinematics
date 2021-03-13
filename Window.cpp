@@ -12,10 +12,12 @@ int Window::height;
 const char* Window::windowTitle = "CSE 169 Project 5";
 
 // Controll Flag
+bool Window::pause = 0;
 bool Window::wireMode = 0;
 bool Window::cullingMode = 0;
 
 // Objects to render
+Cube* Window::land;
 Chain* Window::chain;
 Cube * Window::target;
 
@@ -50,8 +52,14 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	chain = new Chain(5, glm::vec3(0, -3, 0));
-	target = new Cube(glm::vec3(0, 2, 0), glm::vec3(-0.1), glm::vec3(0.1));
+	// joint chain
+	chain = new Chain(6, glm::vec3(0, -3, 0));
+	// target
+	target = new Cube(glm::vec3(0, 3, 0), glm::vec3(1, 0.95, 0.1),
+		glm::vec3(-0.1), glm::vec3(0.1));
+	// land
+	land = new Cube(glm::vec3(0, -3, 0), glm::vec3(0.5),
+		glm::vec3(-1, -0.05, -0.5), glm::vec3(1, 0.05, 0.5));
 
 	return true;
 }
@@ -59,6 +67,7 @@ bool Window::initializeObjects()
 void Window::cleanUp()
 {
 	// Deallcoate the objects.
+	delete land;
 	delete chain;
 	delete target;
 
@@ -159,7 +168,10 @@ void Window::idleCallback()
 
 	chain->update();
 	target->update();
-	chain->moveToward(target->getLocation());
+
+	if (!pause) {
+            chain->moveToward(target->getLocation());
+	}
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -168,6 +180,7 @@ void Window::displayCallback(GLFWwindow* window)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	// Render the object.
+	land->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 	chain->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 	target->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
@@ -227,6 +240,10 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			else {
 				glDisable(GL_CULL_FACE);
 			}
+			break;
+
+		case GLFW_KEY_SPACE:
+			pause = !pause;
 			break;
 
 		case GLFW_KEY_W:

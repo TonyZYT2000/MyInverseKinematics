@@ -13,6 +13,7 @@ class Window
 {
 private:
 private:
+	static bool pause;
 	static bool wireMode;
 	static bool cullingMode;
 
@@ -23,6 +24,7 @@ public:
 	static const char* windowTitle;
 
 	// Objects to render
+	static Cube* land;
 	static Chain* chain;
 	static Cube* target;
 
