@@ -173,6 +173,7 @@ void Cube::update()
 ////////////////////////////////////////////////////////////////////////////////
 
 void Cube::translate(glm::vec3 offset) {
+	// translate the cube by an offset
 	model = glm::translate(glm::mat4(1), offset) * model;
 }
 
@@ -187,5 +188,6 @@ void Cube::spin(float deg)
 ////////////////////////////////////////////////////////////////////////////////
 
 glm::vec3 Cube::getLocation() {
+	// get the world location of the cube
 	return glm::vec3(model * glm::vec4(glm::vec3(0), 1));
 }

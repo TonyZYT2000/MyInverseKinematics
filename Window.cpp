@@ -166,9 +166,11 @@ void Window::idleCallback()
 	// Perform any updates as necessary. 
 	Cam->Update();
 
+	// update chain and target
 	chain->update();
 	target->update();
 
+	// if not paused, move chain toward the target
 	if (!pause) {
             chain->moveToward(target->getLocation());
 	}
@@ -242,50 +244,69 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			}
 			break;
 
+		// toggle pause
 		case GLFW_KEY_SPACE:
 			pause = !pause;
 			break;
 
+		// move target negative z
 		case GLFW_KEY_W:
 			target->translate(glm::vec3(0, 0, -0.05));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
+		// move target positive z
 		case GLFW_KEY_S:
 			target->translate(glm::vec3(0, 0, 0.05));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
+		// move target negative x
 		case GLFW_KEY_A:
 			target->translate(glm::vec3(-0.05, 0, 0));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
+		// move target positive x
 		case GLFW_KEY_D:
 			target->translate(glm::vec3(0.05, 0, 0));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
+		// move target positive y
 		case GLFW_KEY_LEFT_SHIFT:
 			target->translate(glm::vec3(0, 0.05, 0));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
+		// move target negative y
 		case GLFW_KEY_LEFT_CONTROL:
 			target->translate(glm::vec3(0, -0.05, 0));
 			loc = target->getLocation();
-			std::cerr << "\rTarget Location: " << loc.x << ", "
-				<< loc.y << ", " << loc.z;
+			std::cerr << "Target Location: " <<
+				loc.x << ", " <<
+				loc.y << ", " <<
+				loc.z << std::endl;
 			break;
 
 		default:

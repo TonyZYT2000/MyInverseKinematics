@@ -75,42 +75,51 @@ void Joint::draw(const glm::mat4& viewProjMtx, const GLuint shader) {
 }
 
 void Joint::update(const glm::mat4& parent) {
+	// calculate world matrix
 	W = parent * L;
 
+	// update all children's world matrix
 	for (Joint* child : children) {
 		child->update(W);
 	}
 }
 
 glm::vec3 Joint::getJointLocation() {
+	// return world location of the joint
 	return glm::vec3(W * glm::vec4(glm::vec3(0), 1));
 }
 
 glm::vec3 Joint::getEndLocation() {
+	// return world location of the far end of the bounding box
 	return glm::vec3(W * glm::vec4(0, length, 0, 1));
 }
 
 glm::vec3 Joint::jacobianX(glm::vec3 target) {
+	// calculate jacobian of x axis
 	glm::vec3 axis = glm::vec3(W * glm::vec4(1, 0, 0, 0));
 	glm::vec3 difference = target - getJointLocation();
 	return glm::cross(axis, difference);
 }
 
 glm::vec3 Joint::jacobianY(glm::vec3 target) {
+	// calculate jacobian of y axis
 	glm::vec3 axis = glm::vec3(W * glm::vec4(0, 1, 0, 0));
 	glm::vec3 difference = target - getJointLocation();
 	return glm::cross(axis, difference);
 }
 
 glm::vec3 Joint::jacobianZ(glm::vec3 target) {
+	// calculate jacobian of z axis
 	glm::vec3 axis = glm::vec3(W * glm::vec4(0, 0, 1, 0));
 	glm::vec3 difference = target - getJointLocation();
 	return glm::cross(axis, difference);
 }
 
 void Joint::incrementPose(glm::vec3 deltaPose) {
+	// increment pose
 	pose += deltaPose;
 
+	// clamp the pose so not exceeding limits1
 	pose.x = glm::clamp(pose.x, rotXLimit.x, rotXLimit.y);
 	pose.y = glm::clamp(pose.y, rotYLimit.x, rotYLimit.y);
 	pose.z = glm::clamp(pose.z, rotZLimit.x, rotZLimit.y);
@@ -120,7 +129,8 @@ void Joint::incrementPose(glm::vec3 deltaPose) {
 	glm::mat4 rotX = glm::rotate(pose.x, glm::vec3(1, 0, 0));
 	glm::mat4 rotY = glm::rotate(pose.y, glm::vec3(0, 1, 0));
 	glm::mat4 rotZ = glm::rotate(pose.z, glm::vec3(0, 0, 1));
-	// calculate local matrix
+
+	// update local matrix
 	L = translate * rotZ * rotY * rotX * glm::mat4(1);
 }
 
