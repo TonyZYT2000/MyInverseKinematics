@@ -191,7 +191,7 @@ void Window::resetCamera()
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	// Check for a key press.
-	if (action == GLFW_PRESS)
+	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
 		switch (key) 
 		{
@@ -225,6 +225,30 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 			else {
 				glDisable(GL_CULL_FACE);
 			}
+			break;
+
+		case GLFW_KEY_W:
+			target->translate(glm::vec3(0, 0, -0.05));
+			break;
+
+		case GLFW_KEY_S:
+			target->translate(glm::vec3(0, 0, 0.05));
+			break;
+
+		case GLFW_KEY_A:
+			target->translate(glm::vec3(-0.05, 0, 0));
+			break;
+
+		case GLFW_KEY_D:
+			target->translate(glm::vec3(0.05, 0, 0));
+			break;
+
+		case GLFW_KEY_LEFT_SHIFT:
+			target->translate(glm::vec3(0, 0.05, 0));
+			break;
+
+		case GLFW_KEY_LEFT_CONTROL:
+			target->translate(glm::vec3(0, -0.05, 0));
 			break;
 
 		default:

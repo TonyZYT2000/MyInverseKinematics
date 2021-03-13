@@ -174,7 +174,7 @@ void Cube::update()
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void Cube::move(glm::vec3 offset) {
+void Cube::translate(glm::vec3 offset) {
 	model = glm::translate(glm::mat4(1), offset) * model;
 }
 
