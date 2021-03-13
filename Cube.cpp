@@ -186,3 +186,8 @@ void Cube::spin(float deg)
 	model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
+////////////////////////////////////////////////////////////////////////////////
+
+glm::vec3 Cube::getLocation() {
+	return glm::vec3(model * glm::vec4(glm::vec3(0), 1));
+}

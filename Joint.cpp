@@ -1,9 +1,9 @@
 #include "Joint.h"
 
 // Give initial value
-Joint::Joint(glm::vec3 pose, glm::vec3 offset, glm::vec3 boxMin, glm::vec3 boxMax,
+Joint::Joint(float length, glm::vec3 pose, glm::vec3 offset,
 		glm::vec2 rotXLimit, glm::vec2 rotYLimit, glm::vec2 rotZLimit) : 
-		pose(pose), offset(offset), boxMin(boxMin), boxMax(boxMax),
+		length(length), pose(pose), offset(offset),
 		rotXLimit(rotXLimit), rotYLimit(rotYLimit), rotZLimit(rotZLimit) {
 	VAO = 0;
 	EBO = 0;
@@ -16,6 +16,9 @@ Joint::Joint(glm::vec3 pose, glm::vec3 offset, glm::vec3 boxMin, glm::vec3 boxMa
       rotXLimit = glm::vec2(-100000, 100000);
 	rotYLimit = glm::vec2(-100000, 100000);
 	rotZLimit = glm::vec2(-100000, 100000);
+      this->rotXLimit = glm::vec2(-100000, 100000);
+	this->rotYLimit = glm::vec2(-100000, 100000);
+	this->rotZLimit = glm::vec2(-100000, 100000);
 
 	// 4 operations, translation and 3 rotations
 	glm::mat4 translate = glm::translate(glm::mat4(1), offset);
@@ -83,44 +86,82 @@ void Joint::update(const glm::mat4& parent) {
 	}
 }
 
+glm::vec3 Joint::getJointLocation() {
+	return glm::vec3(W * glm::vec4(glm::vec3(0), 1));
+}
+
+glm::vec3 Joint::getEndLocation() {
+	return glm::vec3(W * glm::vec4(0, length, 0, 1));
+}
+
+glm::vec3 Joint::jacobianX(glm::vec3 target) {
+	glm::vec3 axis = glm::vec3(W * glm::vec4(1, 0, 0, 0));
+	glm::vec3 difference = target - getJointLocation();
+	return glm::cross(axis, difference);
+}
+
+glm::vec3 Joint::jacobianY(glm::vec3 target) {
+	glm::vec3 axis = glm::vec3(W * glm::vec4(0, 1, 0, 0));
+	glm::vec3 difference = target - getJointLocation();
+	return glm::cross(axis, difference);
+}
+
+glm::vec3 Joint::jacobianZ(glm::vec3 target) {
+	glm::vec3 axis = glm::vec3(W * glm::vec4(0, 0, 1, 0));
+	glm::vec3 difference = target - getJointLocation();
+	return glm::cross(axis, difference);
+}
+
+void Joint::incrementPose(glm::vec3 deltaPose) {
+	pose += deltaPose;
+
+	// 4 operations, translation and 3 rotations
+	glm::mat4 translate = glm::translate(glm::mat4(1), offset);
+	glm::mat4 rotX = glm::rotate(glm::clamp(pose.x, rotXLimit.x, rotXLimit.y), glm::vec3(1, 0, 0));
+	glm::mat4 rotY = glm::rotate(glm::clamp(pose.y, rotYLimit.x, rotYLimit.y), glm::vec3(0, 1, 0));
+	glm::mat4 rotZ = glm::rotate(glm::clamp(pose.z, rotZLimit.x, rotZLimit.y), glm::vec3(0, 0, 1));
+	// calculate local matrix
+	L = translate * rotZ * rotY * rotX * glm::mat4(1);
+}
+
 void Joint::initializeBox() {
 	// Specify vertex positions
 	positions = {
 		// Front
-		glm::vec3(boxMin.x,boxMin.y,boxMax.z),
-		glm::vec3(boxMax.x,boxMin.y,boxMax.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMax.z),
-		glm::vec3(boxMin.x,boxMax.y,boxMax.z),
+		glm::vec3(-0.1,0,0.1),
+		glm::vec3(0.1,0,0.1),
+		glm::vec3(0.1,length,0.1),
+		glm::vec3(-0.1,length,0.1),
 
 		// Back
-		glm::vec3(boxMax.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMin.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMin.x,boxMax.y,boxMin.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMin.z),
+		glm::vec3(0.1,0,-0.1),
+		glm::vec3(-0.1,0,-0.1),
+		glm::vec3(-0.1,length,-0.1),
+		glm::vec3(0.1,length,-0.1),
 
 		// Top
-		glm::vec3(boxMin.x,boxMax.y,boxMax.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMax.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMin.z),
-		glm::vec3(boxMin.x,boxMax.y,boxMin.z),
+		glm::vec3(-0.1,length,0.1),
+		glm::vec3(0.1,length,0.1),
+		glm::vec3(0.1,length,-0.1),
+		glm::vec3(-0.1,length,-0.1),
 
 		// Bottom
-		glm::vec3(boxMin.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMax.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMax.x,boxMin.y,boxMax.z),
-		glm::vec3(boxMin.x,boxMin.y,boxMax.z),
+		glm::vec3(-0.1,0,-0.1),
+		glm::vec3(0.1,0,-0.1),
+		glm::vec3(0.1,0,0.1),
+		glm::vec3(-0.1,0,0.1),
 
 		// Left
-		glm::vec3(boxMin.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMin.x,boxMin.y,boxMax.z),
-		glm::vec3(boxMin.x,boxMax.y,boxMax.z),
-		glm::vec3(boxMin.x,boxMax.y,boxMin.z),
+		glm::vec3(-0.1,0,-0.1),
+		glm::vec3(-0.1,0,0.1),
+		glm::vec3(-0.1,length,0.1),
+		glm::vec3(-0.1,length,-0.1),
 
 		// Right
-		glm::vec3(boxMax.x,boxMin.y,boxMax.z),
-		glm::vec3(boxMax.x,boxMin.y,boxMin.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMin.z),
-		glm::vec3(boxMax.x,boxMax.y,boxMax.z)
+		glm::vec3(0.1,0,0.1),
+		glm::vec3(0.1,0,-0.1),
+		glm::vec3(0.1,length,-0.1),
+		glm::vec3(0.1,length,0.1)
 	};
 
 	// Specify normals

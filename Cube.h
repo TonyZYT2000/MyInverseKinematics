@@ -28,6 +28,7 @@ public:
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void update();
 	void translate(glm::vec3 offset);
+	glm::vec3 getLocation();
 };
 
 ////////////////////////////////////////////////////////////////////////////////

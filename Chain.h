@@ -19,6 +19,7 @@ public:
 
 	void draw(const glm::mat4& viewProjMtx, GLuint shader);
 	void update();
+	void moveToward(glm::vec3 target);
 };
 
 ////////////////////////////////////////////////////////////////////////////////

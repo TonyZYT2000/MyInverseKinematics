@@ -159,6 +159,7 @@ void Window::idleCallback()
 
 	chain->update();
 	target->update();
+	chain->moveToward(target->getLocation());
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -193,6 +194,7 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 	// Check for a key press.
 	if (action == GLFW_PRESS || action == GLFW_REPEAT)
 	{
+		auto loc = glm::vec3(0);
 		switch (key) 
 		{
 		case GLFW_KEY_ESCAPE:
@@ -229,26 +231,44 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 
 		case GLFW_KEY_W:
 			target->translate(glm::vec3(0, 0, -0.05));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		case GLFW_KEY_S:
 			target->translate(glm::vec3(0, 0, 0.05));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		case GLFW_KEY_A:
 			target->translate(glm::vec3(-0.05, 0, 0));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		case GLFW_KEY_D:
 			target->translate(glm::vec3(0.05, 0, 0));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		case GLFW_KEY_LEFT_SHIFT:
 			target->translate(glm::vec3(0, 0.05, 0));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		case GLFW_KEY_LEFT_CONTROL:
 			target->translate(glm::vec3(0, -0.05, 0));
+			loc = target->getLocation();
+			std::cerr << "\rTarget Location: " << loc.x << ", "
+				<< loc.y << ", " << loc.z;
 			break;
 
 		default:
