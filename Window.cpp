@@ -16,8 +16,8 @@ bool Window::wireMode = 0;
 bool Window::cullingMode = 0;
 
 // Objects to render
-//Cube * Window::cube;
 Chain* Window::chain;
+Cube * Window::target;
 
 // Camera Properties
 Camera* Cam;
@@ -50,9 +50,8 @@ bool Window::initializeProgram() {
 
 bool Window::initializeObjects()
 {
-	// Create a cube
-	//cube = new Cube();
 	chain = new Chain(5, glm::vec3(0, -3, 0));
+	target = new Cube(glm::vec3(0, 2, 0), glm::vec3(-0.1), glm::vec3(0.1));
 
 	return true;
 }
@@ -60,8 +59,8 @@ bool Window::initializeObjects()
 void Window::cleanUp()
 {
 	// Deallcoate the objects.
-	//delete cube;
 	delete chain;
+	delete target;
 
 	// Delete the shader program.
 	glDeleteProgram(shaderProgram);
@@ -158,8 +157,8 @@ void Window::idleCallback()
 	// Perform any updates as necessary. 
 	Cam->Update();
 
-	//cube->update();
 	chain->update();
+	target->update();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -169,6 +168,7 @@ void Window::displayCallback(GLFWwindow* window)
 
 	// Render the object.
 	chain->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+	target->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing.
 	glfwPollEvents();

@@ -23,8 +23,8 @@ public:
 	static const char* windowTitle;
 
 	// Objects to render
-	//static Cube* cube;
 	static Chain* chain;
+	static Cube* target;
 
 	// Shader Program 
 	static GLuint shaderProgram;

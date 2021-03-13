@@ -3,10 +3,10 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax) 
+Cube::Cube(glm::vec3 offset, glm::vec3 cubeMin, glm::vec3 cubeMax) 
 {
 	// Model matrix.
-	model = glm::mat4(1.0f);
+	model = glm::translate(glm::mat4(1), offset) * glm::mat4(1.0f);
 
 	// The color of the cube. Try setting it to something else!
 	color = glm::vec3(1.0f, 0.95f, 0.1f); 
@@ -91,9 +91,9 @@ Cube::Cube(glm::vec3 cubeMin, glm::vec3 cubeMax)
 	
 	// Specify indices
 	indices = {
-		0,1,2,		0,2,3,			// Front
-		4,5,6,		4,6,7,			// Back
-		8,9,10,		8,10,11,		// Top
+		0,1,2,	0,2,3,		// Front
+		4,5,6,	4,6,7,		// Back
+		8,9,10,	8,10,11,		// Top
 		12,13,14,	12,14,15,		// Bottom
 		16,17,18,	16,18,19,		// Left
 		20,21,22,	20,22,23,		// Right
@@ -168,8 +168,14 @@ void Cube::draw(const glm::mat4& viewProjMtx, GLuint shader)
 
 void Cube::update()
 {
-	// Spin the cube by 1 degree.
-	spin(0.1f);
+	// Spin the cube by 0.5 degree.
+	spin(0.5f);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+void Cube::move(glm::vec3 offset) {
+	model = glm::translate(glm::mat4(1), offset) * model;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -180,5 +186,3 @@ void Cube::spin(float deg)
 	model = model * glm::rotate(glm::radians(deg), glm::vec3(0.0f, 1.0f, 0.0f));
 }
 
-
-////////////////////////////////////////////////////////////////////////////////
