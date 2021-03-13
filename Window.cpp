@@ -9,10 +9,15 @@
 // Window Properties
 int Window::width;
 int Window::height;
-const char* Window::windowTitle = "CSE 169 Starter";
+const char* Window::windowTitle = "CSE 169 Project 5";
+
+// Controll Flag
+bool Window::wireMode = 0;
+bool Window::cullingMode = 0;
 
 // Objects to render
-Cube * Window::cube;
+//Cube * Window::cube;
+Chain* Window::chain;
 
 // Camera Properties
 Camera* Cam;
@@ -46,8 +51,8 @@ bool Window::initializeProgram() {
 bool Window::initializeObjects()
 {
 	// Create a cube
-	cube = new Cube();
-	//cube = new Cube(glm::vec3(-1, 0, -2), glm::vec3(1, 1, 1));
+	//cube = new Cube();
+	chain = new Chain(5, glm::vec3(0, -3, 0));
 
 	return true;
 }
@@ -55,7 +60,8 @@ bool Window::initializeObjects()
 void Window::cleanUp()
 {
 	// Deallcoate the objects.
-	delete cube;
+	//delete cube;
+	delete chain;
 
 	// Delete the shader program.
 	glDeleteProgram(shaderProgram);
@@ -153,6 +159,7 @@ void Window::idleCallback()
 	Cam->Update();
 
 	//cube->update();
+	chain->update();
 }
 
 void Window::displayCallback(GLFWwindow* window)
@@ -161,7 +168,7 @@ void Window::displayCallback(GLFWwindow* window)
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);	
 
 	// Render the object.
-	cube->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
+	chain->draw(Cam->GetViewProjectMtx(), Window::shaderProgram);
 
 	// Gets events, including input such as keyboard and mouse or window resizing.
 	glfwPollEvents();
@@ -183,10 +190,6 @@ void Window::resetCamera()
 // callbacks - for Interaction 
 void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	/*
-	 * TODO: Modify below to add your key callbacks.
-	 */
-	
 	// Check for a key press.
 	if (action == GLFW_PRESS)
 	{
@@ -199,6 +202,29 @@ void Window::keyCallback(GLFWwindow* window, int key, int scancode, int action, 
 
 		case GLFW_KEY_R:
 			resetCamera();
+			break;
+
+            // toggle whether to render skeleton when both skin and skeleton present
+		case GLFW_KEY_P:
+			wireMode = !wireMode;
+			if (wireMode) {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			}
+			else {
+				glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			}
+			break;
+
+            // toggle culling
+		case GLFW_KEY_C:
+			cullingMode = !cullingMode;
+			if (cullingMode) {
+				glEnable(GL_CULL_FACE);
+				glCullFace(GL_BACK);
+			}
+			else {
+				glDisable(GL_CULL_FACE);
+			}
 			break;
 
 		default:

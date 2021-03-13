@@ -111,7 +111,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Camera.cpp" />
+    <ClCompile Include="Chain.cpp" />
     <ClCompile Include="Cube.cpp" />
+    <ClCompile Include="Joint.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="shader.cpp" />
     <ClCompile Include="Tokenizer.cpp" />
@@ -119,8 +121,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Camera.h" />
+    <ClInclude Include="Chain.h" />
     <ClInclude Include="core.h" />
     <ClInclude Include="Cube.h" />
+    <ClInclude Include="Joint.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="shader.h" />
     <ClInclude Include="Tokenizer.h" />

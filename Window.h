@@ -5,11 +5,17 @@
 #include "Cube.h"
 #include "shader.h"
 #include "Camera.h"
+#include "Chain.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class Window
 {
+private:
+private:
+	static bool wireMode;
+	static bool cullingMode;
+
 public:
 	// Window Properties
 	static int width;
@@ -17,7 +23,8 @@ public:
 	static const char* windowTitle;
 
 	// Objects to render
-	static Cube* cube;
+	//static Cube* cube;
+	static Chain* chain;
 
 	// Shader Program 
 	static GLuint shaderProgram;
