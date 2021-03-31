@@ -9,7 +9,7 @@
 // Window Properties
 int Window::width;
 int Window::height;
-const char* Window::windowTitle = "CSE 169 Project 5";
+const char* Window::windowTitle = "My Inverse Kinematics";
 
 // Controll Flag
 bool Window::pause = 0;
